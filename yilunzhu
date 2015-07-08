@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script
+src="http://maps.googleapis.com/maps/api/js">
+//The Google Maps JavaScript API v3 does not require an API key to function correctly. However, we strongly encourage you to load the Maps API using an APIs Console key which allows you to monitor your application's Maps API usage.
+//https://developers.google.com/maps/signup
+</script>
+
+<script>
+var FAU=new google.maps.LatLng(26.37430556,-80.10437778);
+var map;
+
+// Add a Home control that returns the user to FAU
+function HomeControl(controlDiv, map) {
+  controlDiv.style.padding = '5px';
+  var controlUI = document.createElement('div');
+  controlUI.style.backgroundColor = 'yellow';
+  controlUI.style.border='1px solid';
+  controlUI.style.cursor = 'pointer';
+  controlUI.style.textAlign = 'center';
+  controlUI.title = 'Set map to FAU';
+  controlDiv.appendChild(controlUI);
+  var controlText = document.createElement('div');
+  controlText.style.fontFamily='Arial,sans-serif';
+  controlText.style.fontSize='12px';
+  controlText.style.paddingLeft = '4px';
+  controlText.style.paddingRight = '4px';
+  controlText.innerHTML = '<b>FAU<b>'
+  controlUI.appendChild(controlText);
+
+  // Setup click-event listener: simply set the map to FAU
+  google.maps.event.addDomListener(controlUI, 'click', function() {
+    map.setCenter(FAU),map.setZoom(12)
+  });
+}
+
+
+
+
+
+
+function initialize()
+{
+
+var mapDiv = document.getElementById('googleMap');
+var mapProp = {
+  center:FAU,
+  zoom:12,
+  zoomControl:true,
+  zoomControlOptions: {
+      style:google.maps.ZoomControlStyle.DEFAULT// picks the best zoom control based on device and map size
+    },
+  scaleControl:true,
+  mapTypeId:google.maps.MapTypeId.ROADMAP
+  };
+
+var map=new google.maps.Map(mapDiv,mapProp);
+
+// Create a DIV to hold the control and call HomeControl()
+  var homeControlDiv = document.createElement('div');
+  var homeControl = new HomeControl(homeControlDiv, map);
+//  homeControlDiv.index = 1;
+  map.controls[google.maps.ControlPosition.TOP_RIGHT].push(homeControlDiv);
+
+
+
+
+
+//there is a marker
+var FAUmarker=new google.maps.Marker({
+  position:FAU,
+  });
+
+FAUmarker.setMap(map);
+
+
+//a circle,center is fau, radius is 8046.720 meter(about 5 mile)
+var mySchool = new google.maps.Circle({
+  center:FAU,
+  radius:8046.720,
+  strokeColor:"#0000FF",
+  strokeOpacity:0.8,
+  strokeWeight:2,
+  fillColor:"#0000FF",
+  fillOpacity:0.4
+  });
+
+mySchool.setMap(map);
+
+//add infoWindow
+var FAUinfowindow = new google.maps.InfoWindow({
+  content:"Florida Atlantic University ^0^"
+  });
+
+FAUinfowindow.open(map,FAUmarker);
+
+
+// Zoom to 14 when clicking on marker
+google.maps.event.addListener(FAUmarker,'click',function() {
+  map.setZoom(14);
+  map.setCenter(FAUmarker.getPosition());
+  });
+
+
+var FAUdH=new google.maps.LatLng(26.369775,-80.10708611);
+//maker for fauAtlanticDiningHall
+var FAUDHmaker=new google.maps.Marker({
+  position:FAUdH,
+  });
+
+FAUDHmaker.setMap(map);
+
+var FAUDHinfowindow = new google.maps.InfoWindow({
+  content:"Atlantic Dining Hall,Close the whole summer Orz"
+  });
+//Open an InfoWindow When Clicking on The Marker
+google.maps.event.addListener(FAUDHmaker, 'click', function() {
+  FAUDHinfowindow.open(map,FAUDHmaker);
+  });
+}
+
+
+google.maps.event.addDomListener(window, 'load', initialize);
+</script>
+</head>
+
+<body>
+<div id="googleMap" style="width:800px;height:800px;"></div>
+</body>
+</html>
