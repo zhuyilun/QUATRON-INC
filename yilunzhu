@@ -3,13 +3,18 @@
 <head>
 <script
 src="http://maps.googleapis.com/maps/api/js">
-//The Google Maps JavaScript API v3 does not require an API key to function correctly. However, we strongly encourage you to load the Maps API using an APIs Console key which allows you to monitor your application's Maps API usage.
+//The Google Maps JavaScript API v3 does not require an API key to function correctly. However, we strongly 
+
+encourage you to load the Maps API using an APIs Console key which allows you to monitor your application's 
+
+Maps API usage.
 //https://developers.google.com/maps/signup
 </script>
 
 <script>
 var FAU=new google.maps.LatLng(26.37430556,-80.10437778);
 var map;
+var geocoder;
 
 // Add a Home control that returns the user to FAU
 function HomeControl(controlDiv, map) {
@@ -40,9 +45,8 @@ function HomeControl(controlDiv, map) {
 
 
 
-function initialize()
-{
-
+function initialize() {
+  geocoder = new google.maps.Geocoder();
 var mapDiv = document.getElementById('googleMap');
 var mapProp = {
   center:FAU,
@@ -55,7 +59,7 @@ var mapProp = {
   mapTypeId:google.maps.MapTypeId.ROADMAP
   };
 
-var map=new google.maps.Map(mapDiv,mapProp);
+map=new google.maps.Map(mapDiv,mapProp);
 
 // Create a DIV to hold the control and call HomeControl()
   var homeControlDiv = document.createElement('div');
@@ -120,12 +124,30 @@ google.maps.event.addListener(FAUDHmaker, 'click', function() {
   });
 }
 
+function codeAddress() {
+  var address = document.getElementById('address').value;
+  geocoder.geocode( { 'address': address}, function(results, status) {
+    if (status == google.maps.GeocoderStatus.OK) {
+      map.setCenter(results[0].geometry.location);
+      map.setZoom(13);
+      var marker = new google.maps.Marker({
+          map: map,
+          position: results[0].geometry.location
+      });
+    } else {
+      alert('Geocode was not successful for the following reason: ' + status);
+    }
+  });
+}
 
 google.maps.event.addDomListener(window, 'load', initialize);
-</script>
-</head>
 
-<body>
-<div id="googleMap" style="width:800px;height:800px;"></div>
-</body>
+    </script>
+  </head>
+  <body>
+    <div id="panel">
+      <input id="address" type="textbox" value="Florida Atlantic University">
+      <input type="button" value="Address Search" onclick="codeAddress()">
+    </div>
+    <div id="googleMap" style="width:800px;height:800px;"></div>  </body>
 </html>
